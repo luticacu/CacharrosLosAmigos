@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <title>Registro y Compra de Vehículos</title>
+
+    <style>
+        .navbarra {
+            background-color: black;
+            padding: 10px 20px;
+        }
+
+        .navbarra h2 {
+            color: white;
+            margin: 0;
+        }
+
+        .imagen {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .carrito {
+            color: white;
+            font-size: 24px;
+        }
+
+        .vmodal {
+            max-width: 800px;
+        }
+
+        .toastfondo {
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .table td, .table th {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar navbar-dark navbarra">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-11">
+                    <a class="navbar-brand" href="#">
+                        <img src="https://1000marcas.net/wp-content/uploads/2020/01/Mazda-Logo-2018.png" alt="" width="100" height="60" class="d-inline-block align-text-top">
+                        <h2>CACHARROS LOS AMIGOS</h2> 
+                    </a>
+                </div>
+                <div class="carrito col-1 justify-content-end mt-3" data-bs-toggle="modal" data-bs-target="#factura">
+                    <button type="button" class="btn btn-primary position-relative">
+                        <i class="bi bi-cart4"></i>
+                        <span id="carrito" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row mt-3 justify-content-center">
+        <div class="col-6">
+            <div class="card bg-success bg-gradient">
+                <div class="card-header">
+                    <h2>REGISTRO DE VEHICULOS</h2> 
+                </div>
+                <div class="card-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="marca" placeholder="Marca">
+                        <label for="floatingInput">Marca</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="modelo" placeholder="Modelo">
+                        <label for="floatingInput">Modelo</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="cilindraje" placeholder="Cilindraje">
+                        <label for="floatingInput">Cilindraje</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="imagen" placeholder="Imagen">
+                        <label for="floatingInput">Imagen</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="precio" placeholder="Precio">
+                        <label for="floatingPassword">Precio</label>
+                    </div>
+                    <button type="button" onclick="registro()" class="btn btn-primary">Agregar</button>
+                    <button type="button" onclick="visualizarcatalogo()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Ver Catalogo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">CATALOGO DE VEHICULOS</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="catalogo"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="liveToast" class="toast toastfondo" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="bi bi-file-arrow-up"></i>
+                <strong class="me-auto">Mensaje</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div id="mensajetoast" class="toast-body"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="factura" tabindex="-1" aria-labelledby="facturaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="facturaLabel">Factura de compra</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Cilindraje</th>
+                                <th>Precio</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaCarrito"></tbody>
+                    </table>
+                    <div id="mensajeCarrito"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Descartar</button>
+                    <button type="button" onclick="finalizarCompra()" class="btn btn-primary">Confirmar Compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        let carros = [];
+        let compras = [];
+        const myToast = new bootstrap.Toast(document.getElementById('liveToast'));
+
+        function registro() {
+            agregarcarro();
+            limpiar();
+        }
+
+        function comprasvehiculo(pos) {
+            compras.push(carros[pos]);
+            let carrito = document.getElementById('carrito');
+            carrito.innerText = compras.length;
+            document.getElementById('mensajetoast').innerText = "Compra realizada con exito ...";
+            myToast.show();
+        }
+
+        function agregarcarro() {
+            let carro = {
+                modelo: document.getElementById('modelo').value,
+                marca: document.getElementById('marca').value,
+                cilindraje: document.getElementById('cilindraje').value,
+                imagen: document.getElementById('imagen').value,
+                precio: parseInt(document.getElementById('precio').value)
+            };
+            carros.push({...carro});
+            document.getElementById('mensajetoast').innerText = "Registro guardado con exito ...";
+            myToast.show();
+        }
+
+        function limpiar() {
+            document.getElementById('marca').value = '';
+            document.getElementById('modelo').value = '';
+            document.getElementById('cilindraje').value = '';
+            document.getElementById('imagen').value = '';
+            document.getElementById('precio').value = '';
+            document.getElementById('marca').focus();
+        }
+
+        function visualizarcatalogo() {
+            let tarjetas = `<div class="row">`;
+            for (let pos in carros) {
+                let data = carros[pos];
+                tarjetas += `<div class="col-3">
+                                <div class="card" style="width: 18rem;">
+                                    <img src="${data.imagen}" class="card-img-top imagen" alt="...">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${data.marca}</h5>
+                                        <p><span>Modelo: ${data.modelo}</span>
+                                        <span>Cilindraje: ${data.cilindraje}</span></p>
+                                        <button onclick="comprasvehiculo(${pos})">$ ${data.precio}</button>
+                                    </div>
+                                </div>
+                             </div>`;
+            }
+            tarjetas += "</div>";
+            document.getElementById('catalogo').innerHTML = tarjetas;
+        }
+
+        function visualizarCarrito() {
+            let listaCarrito = document.getElementById('listaCarrito');
+            listaCarrito.innerHTML = '';
+
+            if (compras.length === 0) {
+                document.getElementById('mensajeCarrito').innerText = 'No hay artículos en el carrito.';
+            } else {
+                compras.forEach((item, index) => {
+                    listaCarrito.innerHTML += `
+                    <tr>
+                        <td>${item.marca}</td>
+                        <td>${item.modelo}</td>
+                        <td>${item.cilindraje}</td>
+                        <td>$${item.precio}</td>
+                        <td><button class="btn btn-danger btn-sm" onclick="eliminarDelCarrito(${index})">Eliminar</button></td>
+                    </tr>`;
+                });
+                document.getElementById('mensajeCarrito').innerText = '';
+            }
+        }
+
+        function eliminarDelCarrito(index) {
+            compras.splice(index, 1);
+            document.getElementById('carrito').innerText = compras.length;
+            visualizarCarrito();
+        }
+
+        function finalizarCompra() {
+            if (compras.length > 0) {
+                alert('Compra finalizada con éxito!');
+                compras = []; // Limpiar carrito
+                document.getElementById('carrito').innerText = compras.length;
+                visualizarCarrito();
+            } else {
+                alert('No hay artículos en el carrito.');
+            }
+        }
+
+        document.getElementById('factura').addEventListener('show.bs.modal', function () {
+            visualizarCarrito();
+        });
+    </script>
+  </div>
+</body>
+</html>
